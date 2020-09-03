@@ -31,6 +31,8 @@ final class ImageDownloaderTest extends HttpServerSpec with ResourceSpec {
           outputFilename
         )
 
+        verifyGetRequestTo(pathToImage)
+
         assert(File(pathTo(resourceImage)).isSameContentAs(File(outputFilename)))
       }
     }
