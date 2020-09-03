@@ -27,7 +27,7 @@ final class ImageDownloaderTest extends HttpServerSpec with ResourceSpec {
         val outputFilename = concat(tempDir.pathAsString, "image1.png")
 
         ImageDownloader().download(
-          ImageSource(url = unsafeApply(s"http://localhost:${port()}$pathToImage")),
+          ImageSource(url = unsafeApply(s"http://localhost:${port().toString}$pathToImage")),
           outputFilename
         )
 

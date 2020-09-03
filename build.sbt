@@ -17,6 +17,7 @@ libraryDependencies ++= Seq(
   "com.github.pathikrit" %% "better-files" % "3.9.1",
   "commons-io" % "commons-io" % "2.7",
   "com.softwaremill.sttp.client" %% "core" % "2.2.7",
+  "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.13.2" % Test,
   "eu.timepit" %% "refined-cats" % "0.9.15",
   "org.scalatest" %% "scalatest" % "3.2.2" % Test,
   "net.coobird" % "thumbnailator" % "0.4.12",

@@ -23,6 +23,8 @@ trait HttpServerSpec extends BaseAnySpec with BeforeAndAfterEach {
 
   def port(): Int = wireMockServer.port()
 
+  // Needed to support calls to the fluent interface in the Java API: WireMockServer
+  @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
   def stubFor(mappingBuilder: MappingBuilder): Unit =
     wireMockServer.stubFor(mappingBuilder)
 
