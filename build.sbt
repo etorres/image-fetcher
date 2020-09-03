@@ -13,11 +13,14 @@ version := (version in ThisBuild).value
 scalaVersion := "2.13.3"
 
 libraryDependencies ++= Seq(
+  "com.amazonaws" % "aws-lambda-java-log4j2" % "1.2.0",
   "com.github.pathikrit" %% "better-files" % "3.9.1",
   "commons-io" % "commons-io" % "2.7",
+  "com.softwaremill.sttp.client" %% "core" % "2.2.7",
   "eu.timepit" %% "refined-cats" % "0.9.15",
   "org.scalatest" %% "scalatest" % "3.2.2" % Test,
-  "net.coobird" % "thumbnailator" % "0.4.12"
+  "net.coobird" % "thumbnailator" % "0.4.12",
+  "com.github.tomakehurst" % "wiremock-jre8" % "2.27.1" % Test
 )
 
 scalacOptions ++= Seq(
