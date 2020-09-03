@@ -1,4 +1,4 @@
-package es.eriktorr.image
+package es.eriktorr.image.core
 
 import java.nio.file.Path
 

@@ -6,13 +6,11 @@ import javax.imageio.ImageIO
 import net.coobird.thumbnailator.Thumbnails
 import org.apache.commons.io.FilenameUtils.{concat, getBaseName}
 
-// Needed to filter thumbnails based on default rule
-@SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
 final class ThumbnailsMaker {
   def thumbnailsFor(
     inputFilename: String,
     outputDirectory: String,
-    filter: ThumbnailRule => Boolean = _.mandatory
+    filter: ThumbnailRule => Boolean
   ): Unit =
     ThumbnailRules.Rules.filter(filter).foreach { rule =>
       rule.thumbnail match {

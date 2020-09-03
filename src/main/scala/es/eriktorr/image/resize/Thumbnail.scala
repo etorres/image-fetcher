@@ -1,6 +1,7 @@
 package es.eriktorr.image.resize
 
 import es.eriktorr.image._
+import es.eriktorr.image.core.Dimensions
 import eu.timepit.refined.auto._
 
 sealed trait Thumbnail
