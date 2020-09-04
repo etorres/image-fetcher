@@ -1,0 +1,10 @@
+service: image-fetcher
+
+provider:
+  name: aws
+  runtime: java11
+  profile: serverless-image-fetcher
+  region: eu-west-1
+
+package:
+  artifact: target/scala-2.13/image-fetcher.jar

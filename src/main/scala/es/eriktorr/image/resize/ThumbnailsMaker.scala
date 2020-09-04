@@ -12,7 +12,7 @@ final class ThumbnailsMaker {
     outputDirectory: String,
     filter: ThumbnailRule => Boolean
   ): Unit =
-    ThumbnailRules.Rules.filter(filter).foreach { rule =>
+    ThumbnailRules.rules.filter(filter).foreach { rule =>
       rule.thumbnail match {
         case format: ThumbnailFormat =>
           for {

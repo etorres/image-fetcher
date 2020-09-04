@@ -13,6 +13,7 @@ version := (version in ThisBuild).value
 scalaVersion := "2.13.3"
 
 libraryDependencies ++= Seq(
+  "com.amazonaws" % "aws-lambda-java-events" % "3.2.0",
   "com.amazonaws" % "aws-lambda-java-log4j2" % "1.2.0",
   "com.github.pathikrit" %% "better-files" % "3.9.1",
   "commons-io" % "commons-io" % "2.7",
