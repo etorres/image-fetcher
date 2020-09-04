@@ -1,4 +1,4 @@
-package es.eriktorr.image.download
+package es.eriktorr.image.fetch
 
 import better.files._
 import com.github.tomakehurst.wiremock.client.WireMock._
@@ -27,8 +27,8 @@ final class ImageDownloaderTest extends HttpServerSpec with ResourceSpec {
         val outputFilename = concat(tempDir.pathAsString, "image1.png")
 
         ImageDownloader().download(
-          ImageSource(url = unsafeApply(s"http://localhost:${port().toString}$pathToImage")),
-          outputFilename
+          url = unsafeApply(s"http://localhost:${port().toString}$pathToImage"),
+          outputFilename = outputFilename
         )
 
         verifyGetRequestTo(pathToImage)

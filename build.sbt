@@ -18,9 +18,11 @@ libraryDependencies ++= Seq(
   "com.github.pathikrit" %% "better-files" % "3.9.1",
   "commons-io" % "commons-io" % "2.7",
   "com.softwaremill.sttp.client" %% "core" % "2.2.7",
+  "com.iheart" %% "ficus" % "1.5.0",
   "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.13.2" % Test,
   "eu.timepit" %% "refined-cats" % "0.9.15",
   "org.scalatest" %% "scalatest" % "3.2.2" % Test,
+  "io.spray" %% "spray-json" % "1.3.5",
   "net.coobird" % "thumbnailator" % "0.4.12",
   "com.github.tomakehurst" % "wiremock-jre8" % "2.27.1" % Test
 )

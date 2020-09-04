@@ -43,3 +43,7 @@ final class ThumbnailsMaker {
         )
     }
 }
+
+object ThumbnailsMaker {
+  def apply(): ThumbnailsMaker = new ThumbnailsMaker()
+}
