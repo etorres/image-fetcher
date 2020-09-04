@@ -31,7 +31,7 @@ final class FetchImageEventHandler(
       val imageSource = sqsEvent.getBody.parseJson.convertTo[ImageSource]
       val imageLocalPath = concat(
         applicationContext.localFileSystem.baseOutputDirectory,
-        s"${filenameFrom(imageSource)}"
+        filenameFrom(imageSource)
       )
       imageDownloader.download(imageSource.sourceUrl, imageLocalPath)
       thumbnailsMaker.thumbnailsFor(

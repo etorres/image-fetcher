@@ -13,6 +13,7 @@ version := (version in ThisBuild).value
 scalaVersion := "2.13.3"
 
 libraryDependencies ++= Seq(
+  "com.amazonaws" % "aws-java-sdk-s3" % "1.11.855",
   "com.amazonaws" % "aws-lambda-java-events" % "3.2.0",
   "com.amazonaws" % "aws-lambda-java-log4j2" % "1.2.0",
   "com.github.pathikrit" %% "better-files" % "3.9.1",
@@ -56,8 +57,8 @@ wartremoverErrors in (Test, compile) ++= warts
 assemblyJarName in assembly := "image-fetcher.jar"
 
 assemblyMergeStrategy in assembly := {
-  case PathList(ps @ _*) if ps.last == "Log4j2Plugins.dat" =>
-    Log4j2MergeStrategy.plugincache
+  case "module-info.class" => MergeStrategy.discard
+  case PathList(ps @ _*) if ps.last == "Log4j2Plugins.dat" => Log4j2MergeStrategy.plugincache
   case x =>
     val oldStrategy = (assemblyMergeStrategy in assembly).value
     oldStrategy(x)
