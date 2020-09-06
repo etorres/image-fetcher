@@ -1,9 +1,10 @@
 package es.eriktorr.image.fetch
 
+import java.net.URL
+
 import better.files._
 import com.github.tomakehurst.wiremock.client.WireMock._
 import es.eriktorr.image.specs.{HttpServerSpec, ResourceSpec}
-import eu.timepit.refined.api.Refined.unsafeApply
 import org.apache.commons.io.FilenameUtils.concat
 
 final class ImageDownloaderTest extends HttpServerSpec with ResourceSpec {
@@ -27,7 +28,7 @@ final class ImageDownloaderTest extends HttpServerSpec with ResourceSpec {
         val outputFilename = concat(tempDir.pathAsString, "image1.png")
 
         ImageDownloader().download(
-          url = unsafeApply(s"http://localhost:${port().toString}$pathToImage"),
+          url = new URL(s"http://localhost:${port().toString}$pathToImage"),
           outputFilename = outputFilename
         )
 

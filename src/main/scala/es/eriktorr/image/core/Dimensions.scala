@@ -1,11 +1,9 @@
 package es.eriktorr.image.core
 
-import es.eriktorr.image.{core, MaxHeight8K, MaxWidth8K}
-import eu.timepit.refined.api.Refined.unsafeApply
+import es.eriktorr.image._
 
-final case class Dimensions(width: MaxWidth8K, height: MaxHeight8K)
+final case class Dimensions(width: Width, height: Height)
 
 object Dimensions {
-  def apply(size: Int): Dimensions =
-    core.Dimensions(unsafeApply(size), unsafeApply(size))
+  def apply(size: Int): Dimensions = Dimensions(size, size)
 }

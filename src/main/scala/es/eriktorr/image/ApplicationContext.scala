@@ -1,19 +1,18 @@
 package es.eriktorr.image
 
-import com.typesafe.config.{Config, ConfigFactory}
-import net.ceedubs.ficus.Ficus._
-import net.ceedubs.ficus.readers.ArbitraryTypeReader._
+final case class AwsConfig(serviceEndpoint: String, signingRegion: String)
 
-final case class LocalFileSystem(baseOutputDirectory: String)
-
-final case class ApplicationContext(localFileSystem: LocalFileSystem)
+final case class ApplicationContext(
+  destinationBucket: String,
+  awsConfig: Option[AwsConfig]
+)
 
 object ApplicationContext {
-  def apply(): ApplicationContext = apply(ConfigFactory.load())
+  def apply(): ApplicationContext = ???
+  // TODO: IMAGE_FETCHER_DESTINATION_BUCKET
 
-  def apply(config: Config): ApplicationContext = {
-    val localFileSystem: LocalFileSystem = config.as[LocalFileSystem]("localFileSystem")
-
-    ApplicationContext(localFileSystem)
-  }
+  def apply(
+    destinationBucket: String,
+    awsConfig: Option[AwsConfig]
+  ): ApplicationContext = new ApplicationContext(destinationBucket, awsConfig)
 }

@@ -12,6 +12,8 @@ version := (version in ThisBuild).value
 
 scalaVersion := "2.13.3"
 
+val log4jVersion = "2.13.2"
+
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-s3" % "1.11.855",
   "com.amazonaws" % "aws-lambda-java-events" % "3.2.0",
@@ -19,9 +21,8 @@ libraryDependencies ++= Seq(
   "com.github.pathikrit" %% "better-files" % "3.9.1",
   "commons-io" % "commons-io" % "2.7",
   "com.softwaremill.sttp.client" %% "core" % "2.2.7",
-  "com.iheart" %% "ficus" % "1.5.0",
-  "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.13.2" % Test,
-  "eu.timepit" %% "refined-cats" % "0.9.15",
+  "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion % Test,
+  "org.apache.logging.log4j" % "log4j-jcl" % log4jVersion % Test,
   "org.scalatest" %% "scalatest" % "3.2.2" % Test,
   "io.spray" %% "spray-json" % "1.3.5",
   "net.coobird" % "thumbnailator" % "0.4.12",

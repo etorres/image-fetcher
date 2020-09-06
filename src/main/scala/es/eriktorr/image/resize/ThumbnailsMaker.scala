@@ -1,7 +1,6 @@
 package es.eriktorr.image.resize
 
 import better.files._
-import eu.timepit.refined.auto._
 import javax.imageio.ImageIO
 import net.coobird.thumbnailator.Thumbnails
 import org.apache.commons.io.FilenameUtils.{concat, getBaseName}

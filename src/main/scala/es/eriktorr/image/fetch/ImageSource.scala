@@ -1,9 +1,8 @@
 package es.eriktorr.image.fetch
 
+import java.net.URL
 import java.util.Locale.IsoCountryCode
 
-import es.eriktorr.image._
-import eu.timepit.refined.api.Refined.unsafeApply
 import spray.json._
 
 final case class ImageId(value: String)
@@ -12,7 +11,7 @@ final case class VerticalMarket(value: String)
 
 final case class Site(country: IsoCountryCode, verticalMarket: VerticalMarket)
 
-final case class ImageSource(imageId: ImageId, destinationSite: Site, sourceUrl: Url)
+final case class ImageSource(imageId: ImageId, site: Site, url: URL)
 
 object FetchImageJsonProtocol extends DefaultJsonProtocol {
   implicit def imageIdFormat: RootJsonFormat[ImageId] = jsonFormat1(ImageId)
@@ -28,11 +27,11 @@ object FetchImageJsonProtocol extends DefaultJsonProtocol {
     }
   }
 
-  implicit object UrlFormat extends RootJsonFormat[Url] {
-    override def write(url: Url): JsString = JsString(url.value)
+  implicit object UrlFormat extends RootJsonFormat[URL] {
+    override def write(url: URL): JsString = JsString(url.toString)
 
-    override def read(value: JsValue): Url = value match {
-      case JsString(url) => unsafeApply(url)
+    override def read(value: JsValue): URL = value match {
+      case JsString(url) => new URL(url)
       case _ => deserializationError("URL expected")
     }
   }

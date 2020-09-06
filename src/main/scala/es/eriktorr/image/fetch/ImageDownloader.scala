@@ -1,8 +1,9 @@
 package es.eriktorr.image.fetch
 
+import java.net.URL
+
 import better.files._
 import sttp.client._
-import es.eriktorr.image._
 
 final class ImageDownloader {
   implicit private[this] val backend: SttpBackend[Identity, Nothing, NothingT] =
@@ -14,7 +15,7 @@ final class ImageDownloader {
    * More info: https://sttp.softwaremill.com/en/latest/responses/body.html
    */
   @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements", "org.wartremover.warts.Any"))
-  def download(url: Url, outputFilename: String): Unit =
+  def download(url: URL, outputFilename: String): Unit =
     basicRequest
       .get(uri"$url")
       .response(asFile(File(outputFilename).toJava))
