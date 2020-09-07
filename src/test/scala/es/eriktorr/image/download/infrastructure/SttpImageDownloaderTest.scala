@@ -8,10 +8,10 @@ import es.eriktorr.image.specs.{HttpServerSpec, ResourceSpec}
 import org.apache.commons.io.FilenameUtils.concat
 
 final class SttpImageDownloaderTest extends HttpServerSpec with ResourceSpec {
-  private[this] val pathToImage = "/assets/img/image1.png"
-  private[this] val resourceImage = "images/image1.png"
-
   "Image downloader should" - {
+    val pathToImage = "/assets/img/image1.png"
+    val resourceImage = "images/image1.png"
+
     "download images from source URL" in {
       stubFor(
         get(pathToImage)

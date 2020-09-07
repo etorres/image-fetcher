@@ -3,6 +3,7 @@ package es.eriktorr.image.app
 import better.files._
 import com.amazonaws.services.lambda.runtime.events.SQSEvent
 import com.amazonaws.services.lambda.runtime.{Context, RequestHandler}
+import es.eriktorr.image.ApplicationContext
 import es.eriktorr.image.core.ImageFormats.{imageFormatFrom, mimeTypeFrom}
 import es.eriktorr.image.download.FetchImageJsonProtocol._
 import es.eriktorr.image.download.infrastructure.SttpImageDownloader
@@ -12,7 +13,6 @@ import es.eriktorr.image.publish.{ImageDestination, ImageMetadata, ImagePublishe
 import es.eriktorr.image.resize.ThumbnailRules.mandatoryThumbnails
 import es.eriktorr.image.resize.Thumbnailator
 import es.eriktorr.image.resize.infrastructure.ThumbnailsMaker
-import es.eriktorr.image.{ApplicationContext, AwsConfig}
 import org.apache.commons.io.FilenameUtils.{concat, getExtension}
 import spray.json._
 
@@ -24,13 +24,17 @@ final class FetchImageEventHandler(
   thumbnailsMaker: ThumbnailsMaker,
   imagePublisher: ImagePublisher
 ) extends RequestHandler[SQSEvent, Unit] {
-  def this() = {
+  def this(applicationContext: ApplicationContext) = {
     this(
-      applicationContext = ApplicationContext(),
+      applicationContext,
       imageDownloader = SttpImageDownloader(),
       thumbnailsMaker = Thumbnailator(),
-      imagePublisher = AmazonS3ImagePublisher()
+      imagePublisher = AmazonS3ImagePublisher(applicationContext.awsConfig)
     )
+  }
+
+  def this() = {
+    this(ApplicationContext())
   }
 
   override def handleRequest(sqsEvent: SQSEvent, context: Context): Unit =
@@ -44,7 +48,6 @@ final class FetchImageEventHandler(
             val filename = concat(workingDir, s"$id.$extension")
             imageDownloader.download(imageSource.url, filename)
             thumbnailsMaker.thumbnailsFor(filename, workingDir, mandatoryThumbnails)
-            implicit val awsConfig: Option[AwsConfig] = applicationContext.awsConfig
             File(workingDir).list(_.isRegularFile).foreach { file =>
               imagePublisher.publish(
                 file.pathAsString,
