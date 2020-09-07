@@ -1,10 +1,10 @@
 package es.eriktorr.image.app
 
-import better.files._
 import com.amazonaws.services.lambda.runtime.events.SQSEvent
 import com.amazonaws.services.lambda.runtime.{Context, RequestHandler}
 import es.eriktorr.image.ApplicationContext
 import es.eriktorr.image.core.ImageFormats.{imageFormatFrom, mimeTypeFrom}
+import es.eriktorr.image.core.infrastructure.{BetterFilesLocalFileSystem, LocalFileSystem}
 import es.eriktorr.image.download.FetchImageJsonProtocol._
 import es.eriktorr.image.download.infrastructure.SttpImageDownloader
 import es.eriktorr.image.download.{ImageDownloader, ImageSource}
@@ -18,18 +18,20 @@ import spray.json._
 
 import scala.jdk.CollectionConverters._
 
-final class FetchImageEventHandler(
+final class FetchImageEventHandler private[app] (
   applicationContext: ApplicationContext,
+  localFileSystem: LocalFileSystem,
   imageDownloader: ImageDownloader,
   thumbnailsMaker: ThumbnailsMaker,
   imagePublisher: ImagePublisher
 ) extends RequestHandler[SQSEvent, Unit] {
-  def this(applicationContext: ApplicationContext) = {
+  private[this] def this(applicationContext: ApplicationContext) = {
     this(
       applicationContext,
-      imageDownloader = SttpImageDownloader(),
-      thumbnailsMaker = Thumbnailator(),
-      imagePublisher = AmazonS3ImagePublisher(applicationContext.awsConfig)
+      BetterFilesLocalFileSystem(),
+      SttpImageDownloader(),
+      Thumbnailator(),
+      AmazonS3ImagePublisher(applicationContext.awsConfig)
     )
   }
 
@@ -38,17 +40,17 @@ final class FetchImageEventHandler(
   }
 
   override def handleRequest(sqsEvent: SQSEvent, context: Context): Unit =
-    File.usingTemporaryDirectory() { tempDir =>
+    localFileSystem.usingTemporaryDirectory() { tempDir =>
       sqsEvent.getRecords.asScala.foreach { sqsEvent =>
         val imageSource = sqsEvent.getBody.parseJson.convertTo[ImageSource]
         val (site, id, extension) = deconstruct(imageSource)
         imageFormatFrom(extension) match {
           case Some(_) =>
-            val workingDir = concat(tempDir.pathAsString, s"$site/$id")
+            val workingDir = concat(tempDir, s"$site/$id")
             val filename = concat(workingDir, s"$id.$extension")
             imageDownloader.download(imageSource.url, filename)
             thumbnailsMaker.thumbnailsFor(filename, workingDir, mandatoryThumbnails)
-            File(workingDir).list(_.isRegularFile).foreach { file =>
+            localFileSystem.listFilesIn(workingDir).foreach { file =>
               imagePublisher.publish(
                 file.pathAsString,
                 ImageDestination(
