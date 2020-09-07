@@ -1,4 +1,4 @@
-package es.eriktorr.image.fetch
+package es.eriktorr.image.download
 
 import java.net.URL
 import java.util.Locale.IsoCountryCode

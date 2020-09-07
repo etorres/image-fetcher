@@ -8,8 +8,11 @@ final case class ApplicationContext(
 )
 
 object ApplicationContext {
-  def apply(): ApplicationContext = ???
-  // TODO: IMAGE_FETCHER_DESTINATION_BUCKET
+  def apply(): ApplicationContext =
+    new ApplicationContext(
+      destinationBucket = System.getenv("IMAGE_FETCHER_DESTINATION_BUCKET"),
+      awsConfig = None
+    )
 
   def apply(
     destinationBucket: String,

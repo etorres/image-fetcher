@@ -1,4 +1,4 @@
-package es.eriktorr.image.fetch
+package es.eriktorr.image.download.infrastructure
 
 import java.net.URL
 
@@ -7,7 +7,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import es.eriktorr.image.specs.{HttpServerSpec, ResourceSpec}
 import org.apache.commons.io.FilenameUtils.concat
 
-final class ImageDownloaderTest extends HttpServerSpec with ResourceSpec {
+final class SttpImageDownloaderTest extends HttpServerSpec with ResourceSpec {
   private[this] val pathToImage = "/assets/img/image1.png"
   private[this] val resourceImage = "images/image1.png"
 
@@ -25,9 +25,9 @@ final class ImageDownloaderTest extends HttpServerSpec with ResourceSpec {
       )
 
       File.usingTemporaryDirectory() { tempDir =>
-        val outputFilename = concat(tempDir.pathAsString, "image1.png")
+        val outputFilename = concat(tempDir.pathAsString, "es_cars/image1/image1.png")
 
-        ImageDownloader().download(
+        SttpImageDownloader().download(
           url = new URL(s"http://localhost:${port().toString}$pathToImage"),
           outputFilename = outputFilename
         )

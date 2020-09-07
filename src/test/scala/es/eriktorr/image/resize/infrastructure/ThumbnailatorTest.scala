@@ -1,15 +1,13 @@
-package es.eriktorr.image.resize
+package es.eriktorr.image.resize.infrastructure
 
 import better.files._
 import es.eriktorr.image.resize.ThumbnailRules.{allThumbnails, mandatoryThumbnails}
+import es.eriktorr.image.resize.Thumbnailator
 import es.eriktorr.image.specs.{BaseAnySpec, ResourceSpec}
 import org.apache.commons.io.FilenameUtils.getName
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-final class ThumbnailsMakerTest
-    extends BaseAnySpec
-    with ResourceSpec
-    with TableDrivenPropertyChecks {
+final class ThumbnailatorTest extends BaseAnySpec with ResourceSpec with TableDrivenPropertyChecks {
 
   private[this] val images =
     Table(
@@ -26,7 +24,7 @@ final class ThumbnailsMakerTest
   "Thumbnails maker should" - {
     "create thumbnail images" in {
       File.usingTemporaryDirectory() { tempDir =>
-        val thumbnailsMaker = new ThumbnailsMaker
+        val thumbnailsMaker = Thumbnailator()
         forAll(images) { (image, filter, thumbnails) =>
           thumbnailsMaker.thumbnailsFor(pathTo(image), tempDir.pathAsString, filter)
           assert(

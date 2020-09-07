@@ -1,12 +1,13 @@
 package es.eriktorr.image.resize
 
 import better.files._
+import es.eriktorr.image.resize.infrastructure.ThumbnailsMaker
 import javax.imageio.ImageIO
 import net.coobird.thumbnailator.Thumbnails
 import org.apache.commons.io.FilenameUtils.{concat, getBaseName}
 
-final class ThumbnailsMaker {
-  def thumbnailsFor(
+final class Thumbnailator extends ThumbnailsMaker {
+  override def thumbnailsFor(
     inputFilename: String,
     outputDirectory: String,
     filter: ThumbnailRule => Boolean
@@ -43,6 +44,6 @@ final class ThumbnailsMaker {
     }
 }
 
-object ThumbnailsMaker {
-  def apply(): ThumbnailsMaker = new ThumbnailsMaker()
+object Thumbnailator {
+  def apply(): Thumbnailator = new Thumbnailator()
 }
