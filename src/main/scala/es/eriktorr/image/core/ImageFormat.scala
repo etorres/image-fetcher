@@ -13,3 +13,6 @@ case object JpegImage
 case object PngImage
     extends MimeType(mimeType = "image/png", extensions = List("png"))
     with ImageFormat
+case object UnknownFormat
+    extends MimeType(mimeType = "application/octet-stream", extensions = List.empty)
+    with ImageFormat

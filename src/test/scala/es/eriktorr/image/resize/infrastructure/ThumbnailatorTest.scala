@@ -8,20 +8,24 @@ import org.apache.commons.io.FilenameUtils.getName
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 final class ThumbnailatorTest extends BaseAnySpec with ResourceSpec with TableDrivenPropertyChecks {
-
-  private[this] val images =
-    Table(
-      ("image", "filter", "thumbnails"),
-      (
-        "images/image1.png",
-        allThumbnails,
-        List("image1-160x160.jpg", "image1-320x320.jpg", "image1-640x640.jpg", "image1-960x960.jpg")
-      ),
-      ("images/image2.gif", mandatoryThumbnails, List("image2-160x160.jpg")),
-      ("images/image3.jpg", mandatoryThumbnails, List("image3-160x160.jpg"))
-    )
-
   "Thumbnails maker should" - {
+    val images =
+      Table(
+        ("image", "filter", "thumbnails"),
+        (
+          "images/image1.png",
+          allThumbnails,
+          List(
+            "image1-160x160.jpg",
+            "image1-320x320.jpg",
+            "image1-640x640.jpg",
+            "image1-960x960.jpg"
+          )
+        ),
+        ("images/image2.gif", mandatoryThumbnails, List("image2-160x160.jpg")),
+        ("images/image3.jpg", mandatoryThumbnails, List("image3-160x160.jpg"))
+      )
+
     "create thumbnail images" in {
       File.usingTemporaryDirectory() { tempDir =>
         val thumbnailsMaker = Thumbnailator()

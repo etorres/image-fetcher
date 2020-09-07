@@ -3,7 +3,7 @@ package es.eriktorr.image.app
 import better.files._
 import com.amazonaws.services.lambda.runtime.events.SQSEvent
 import com.amazonaws.services.lambda.runtime.{Context, RequestHandler}
-import es.eriktorr.image.core.ImageFormats.imageFormatFrom
+import es.eriktorr.image.core.ImageFormats.{imageFormatFrom, mimeTypeFrom}
 import es.eriktorr.image.download.FetchImageJsonProtocol._
 import es.eriktorr.image.download.infrastructure.SttpImageDownloader
 import es.eriktorr.image.download.{ImageDownloader, ImageSource}
@@ -51,7 +51,7 @@ final class FetchImageEventHandler(
                 ImageDestination(
                   bucket = applicationContext.destinationBucket,
                   key = s"$site/$file.name",
-                  metadata = ImageMetadata(imageSource.url, ???) // TODO
+                  metadata = ImageMetadata(imageSource.url, mimeTypeFrom(file.`extension`))
                 )
               )
             }
