@@ -1,6 +1,6 @@
 package es.eriktorr.image.core.infrastructure
 
-final case class LocalFile(pathAsString: String, extension: Option[String])
+final case class LocalFile(pathAsString: String, name: String, extension: Option[String])
 
 trait LocalFileSystem {
   def usingTemporaryDirectory[U]()(f: String => U): Unit
@@ -15,7 +15,7 @@ final class BetterFilesLocalFileSystem extends LocalFileSystem {
     File.usingTemporaryDirectory()(tempDir => f(tempDir.pathAsString))
 
   override def listFilesIn(dir: String): Iterator[LocalFile] =
-    File(dir).list(_.isRegularFile).map(f => LocalFile(f.pathAsString, f.`extension`))
+    File(dir).list(_.isRegularFile).map(f => LocalFile(f.pathAsString, f.name, f.`extension`))
 }
 
 object BetterFilesLocalFileSystem {

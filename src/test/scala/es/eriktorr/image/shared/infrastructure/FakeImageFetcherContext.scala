@@ -1,5 +1,6 @@
 package es.eriktorr.image.shared.infrastructure
 
+import java.net.URL
 import java.util.concurrent.atomic.AtomicReference
 
 import com.amazonaws.services.lambda.runtime.events.SQSEvent
@@ -7,6 +8,7 @@ import com.amazonaws.services.lambda.runtime.events.SQSEvent.SQSMessage
 import es.eriktorr.image.app.FetchImageEventHandler
 import es.eriktorr.image.core.infrastructure.FakeLocalFileSystem
 import es.eriktorr.image.download.infrastructure.{FakeImageDownloader, ImageDownloaderState}
+import es.eriktorr.image.publish.{ImageDestination, ImageMetadata}
 import es.eriktorr.image.publish.infrastructure.{FakeImagePublisher, ImagePublisherState}
 import es.eriktorr.image.resize.infrastructure.{FakeThumbnailsMaker, ThumbnailsMakerState}
 
@@ -40,6 +42,46 @@ object ImageFetcherState {
       ImageDownloaderState(List.empty),
       ThumbnailsMakerState(List.empty),
       ImagePublisherState(List.empty)
+    )
+
+  def finalImageFetcherState: ImageFetcherState =
+    ImageFetcherState(
+      ImageDownloaderState(
+        List(
+          (new URL("http://example.org/image2.png"), "/tmp/es/cars/2/2.png"),
+          (new URL("http://example.org/image1.png"), "/tmp/es/cars/1/1.png")
+        )
+      ),
+      ThumbnailsMakerState(
+        List(
+          ("/tmp/es/cars/2/2.png", "/tmp/es/cars/2/2-160x160.jpg"),
+          ("/tmp/es/cars/1/1.png", "/tmp/es/cars/1/1-160x160.jpg")
+        )
+      ),
+      ImagePublisherState(
+        List(
+          ImageDestination(
+            "images",
+            "es/cars/2-160x160.jpg",
+            ImageMetadata(new URL("http://example.org/image2.png"), "image/jpeg")
+          ),
+          ImageDestination(
+            "images",
+            "es/cars/2.png",
+            ImageMetadata(new URL("http://example.org/image2.png"), "image/png")
+          ),
+          ImageDestination(
+            "images",
+            "es/cars/1-160x160.jpg",
+            ImageMetadata(new URL("http://example.org/image1.png"), "image/jpeg")
+          ),
+          ImageDestination(
+            "images",
+            "es/cars/1.png",
+            ImageMetadata(new URL("http://example.org/image1.png"), "image/png")
+          )
+        )
+      )
     )
 }
 

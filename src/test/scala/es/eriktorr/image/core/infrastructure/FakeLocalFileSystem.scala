@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 import es.eriktorr.image.download.infrastructure.ImageDownloaderState
 import es.eriktorr.image.resize.infrastructure.ThumbnailsMakerState
-import org.apache.commons.io.FilenameUtils.getExtension
+import org.apache.commons.io.FilenameUtils.{getExtension, getName}
 
 final class FakeLocalFileSystem(
   imagesRef: AtomicReference[ImageDownloaderState],
@@ -28,7 +28,7 @@ final class FakeLocalFileSystem(
       }
       .map(_._2)
     (images ++ thumbnails)
-      .map(filename => LocalFile(filename, Some(getExtension(filename))))
+      .map(filename => LocalFile(filename, getName(filename), Some(getExtension(filename))))
       .iterator
   }
 }

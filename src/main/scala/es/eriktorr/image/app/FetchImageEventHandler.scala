@@ -55,7 +55,7 @@ final class FetchImageEventHandler(
                 file.pathAsString,
                 ImageDestination(
                   bucket = applicationContext.destinationBucket,
-                  key = s"$site/$file.name",
+                  key = s"$site/${file.name}",
                   metadata = ImageMetadata(imageSource.url, mimeTypeFrom(file.`extension`))
                 )
               )
