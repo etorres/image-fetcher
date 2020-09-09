@@ -21,9 +21,9 @@ final case class ImageFetcherState(
 )
 
 object ImageFetcherState {
-  private[this] val imageIds = List(1, 2)
+  private[this] val imageIds = List("1", "2")
 
-  private[this] def sqsMessageFrom(imageId: Int) = {
+  private[this] def sqsMessageFrom(imageId: String) = {
     val body = s"""{"imageId":{"value":"$imageId"},
                   |"site":{"country":{"value":"es"},"verticalMarket":{"value":"cars"}},
                   |"url": "http://example.org/image$imageId.png"}""".stripMargin
@@ -61,15 +61,21 @@ object ImageFetcherState {
       ImagePublisherState(
         imageIds.reverse.flatMap { id =>
           List(
-            ImageDestination(
-              "images",
-              s"es/cars/$id-160x160.jpg",
-              ImageMetadata(new URL(s"http://example.org/image$id.png"), "image/jpeg")
+            (
+              s"/tmp/es/cars/$id/$id-160x160.jpg",
+              ImageDestination(
+                "images",
+                s"es/cars/$id-160x160.jpg",
+                ImageMetadata(new URL(s"http://example.org/image$id.png"), "image/jpeg")
+              )
             ),
-            ImageDestination(
-              "images",
-              s"es/cars/$id.png",
-              ImageMetadata(new URL(s"http://example.org/image$id.png"), "image/png")
+            (
+              s"/tmp/es/cars/$id/$id.png",
+              ImageDestination(
+                "images",
+                s"es/cars/$id.png",
+                ImageMetadata(new URL(s"http://example.org/image$id.png"), "image/png")
+              )
             )
           )
         }
