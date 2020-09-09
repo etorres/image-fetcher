@@ -21,6 +21,8 @@ final case class ImageFetcherState(
 )
 
 object ImageFetcherState {
+  private[this] val imageIds = List(1, 2)
+
   private[this] def sqsMessageFrom(imageId: Int) = {
     val body = s"""{"imageId":{"value":"$imageId"},
                   |"site":{"country":{"value":"es"},"verticalMarket":{"value":"cars"}},
@@ -33,7 +35,7 @@ object ImageFetcherState {
   val sqsEvent: SQSEvent = {
     import scala.jdk.CollectionConverters._
     val sqsEvent = new SQSEvent
-    sqsEvent.setRecords(List(sqsMessageFrom(1), sqsMessageFrom(2)).asJava)
+    sqsEvent.setRecords(imageIds.map(id => sqsMessageFrom(id)).asJava)
     sqsEvent
   }
 
@@ -47,40 +49,30 @@ object ImageFetcherState {
   def finalImageFetcherState: ImageFetcherState =
     ImageFetcherState(
       ImageDownloaderState(
-        List(
-          (new URL("http://example.org/image2.png"), "/tmp/es/cars/2/2.png"),
-          (new URL("http://example.org/image1.png"), "/tmp/es/cars/1/1.png")
-        )
+        imageIds.reverse.map { id =>
+          (new URL(s"http://example.org/image$id.png"), s"/tmp/es/cars/$id/$id.png")
+        }
       ),
       ThumbnailsMakerState(
-        List(
-          ("/tmp/es/cars/2/2.png", "/tmp/es/cars/2/2-160x160.jpg"),
-          ("/tmp/es/cars/1/1.png", "/tmp/es/cars/1/1-160x160.jpg")
-        )
+        imageIds.reverse.map { id =>
+          (s"/tmp/es/cars/$id/$id.png", s"/tmp/es/cars/$id/$id-160x160.jpg")
+        }
       ),
       ImagePublisherState(
-        List(
-          ImageDestination(
-            "images",
-            "es/cars/2-160x160.jpg",
-            ImageMetadata(new URL("http://example.org/image2.png"), "image/jpeg")
-          ),
-          ImageDestination(
-            "images",
-            "es/cars/2.png",
-            ImageMetadata(new URL("http://example.org/image2.png"), "image/png")
-          ),
-          ImageDestination(
-            "images",
-            "es/cars/1-160x160.jpg",
-            ImageMetadata(new URL("http://example.org/image1.png"), "image/jpeg")
-          ),
-          ImageDestination(
-            "images",
-            "es/cars/1.png",
-            ImageMetadata(new URL("http://example.org/image1.png"), "image/png")
+        imageIds.reverse.flatMap { id =>
+          List(
+            ImageDestination(
+              "images",
+              s"es/cars/$id-160x160.jpg",
+              ImageMetadata(new URL(s"http://example.org/image$id.png"), "image/jpeg")
+            ),
+            ImageDestination(
+              "images",
+              s"es/cars/$id.png",
+              ImageMetadata(new URL(s"http://example.org/image$id.png"), "image/png")
+            )
           )
-        )
+        }
       )
     )
 }
