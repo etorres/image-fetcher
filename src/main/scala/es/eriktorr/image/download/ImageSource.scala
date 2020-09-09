@@ -1,31 +1,25 @@
 package es.eriktorr.image.download
 
 import java.net.URL
-import java.util.Locale.IsoCountryCode
 
 import spray.json._
 
 final case class ImageId(value: String)
 
+final case class CountryCode(value: String)
+
 final case class VerticalMarket(value: String)
 
-final case class Site(country: IsoCountryCode, verticalMarket: VerticalMarket)
+final case class Site(country: CountryCode, verticalMarket: VerticalMarket)
 
 final case class ImageSource(imageId: ImageId, site: Site, url: URL)
 
 object FetchImageJsonProtocol extends DefaultJsonProtocol {
   implicit def imageIdFormat: RootJsonFormat[ImageId] = jsonFormat1(ImageId)
 
+  implicit def countryCodeFormat: RootJsonFormat[CountryCode] = jsonFormat1(CountryCode)
+
   implicit def verticalMarketFormat: RootJsonFormat[VerticalMarket] = jsonFormat1(VerticalMarket)
-
-  implicit object CountryJsonFormat extends RootJsonFormat[IsoCountryCode] {
-    def write(countryCode: IsoCountryCode): JsString = JsString(countryCode.toString)
-
-    def read(value: JsValue): IsoCountryCode = value match {
-      case JsString(countryCode) => IsoCountryCode.valueOf(countryCode)
-      case _ => deserializationError("Country code expected")
-    }
-  }
 
   implicit object UrlFormat extends RootJsonFormat[URL] {
     override def write(url: URL): JsString = JsString(url.toString)

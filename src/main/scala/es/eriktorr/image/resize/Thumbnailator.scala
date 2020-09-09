@@ -17,7 +17,11 @@ final class Thumbnailator extends ThumbnailsMaker {
         case format: ThumbnailFormat =>
           for {
             inputStream <- inputFilename.toFile.newInputStream.autoClosed
-            outputStream <- outputPathnameFrom(inputFilename, outputDirectory, format).toFile.newOutputStream.autoClosed
+            outputStream <- Thumbnailator
+              .outputPathnameFrom(inputFilename, outputDirectory, format)
+              .toFile
+              .newOutputStream
+              .autoClosed
           } yield {
             Thumbnails
               .of(ImageIO.read(inputStream))
@@ -29,6 +33,10 @@ final class Thumbnailator extends ThumbnailsMaker {
           }
       }
     }
+}
+
+object Thumbnailator {
+  def apply(): Thumbnailator = new Thumbnailator()
 
   private[resize] def outputPathnameFrom(
     inputPathname: String,
@@ -42,8 +50,4 @@ final class Thumbnailator extends ThumbnailsMaker {
           s"${getBaseName(inputPathname)}-${format.dimensions.width.toString}x${format.dimensions.height.toString}.jpg"
         )
     }
-}
-
-object Thumbnailator {
-  def apply(): Thumbnailator = new Thumbnailator()
 }

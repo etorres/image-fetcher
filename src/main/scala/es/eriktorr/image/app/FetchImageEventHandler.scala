@@ -18,7 +18,7 @@ import spray.json._
 
 import scala.jdk.CollectionConverters._
 
-final class FetchImageEventHandler private[app] (
+final class FetchImageEventHandler(
   applicationContext: ApplicationContext,
   localFileSystem: LocalFileSystem,
   imageDownloader: ImageDownloader,
@@ -39,7 +39,7 @@ final class FetchImageEventHandler private[app] (
     this(ApplicationContext())
   }
 
-  override def handleRequest(sqsEvent: SQSEvent, context: Context): Unit =
+  override def handleRequest(sqsEvent: SQSEvent, awsLambdaContext: Context): Unit =
     localFileSystem.usingTemporaryDirectory() { tempDir =>
       sqsEvent.getRecords.asScala.foreach { sqsEvent =>
         val imageSource = sqsEvent.getBody.parseJson.convertTo[ImageSource]
@@ -61,13 +61,13 @@ final class FetchImageEventHandler private[app] (
               )
             }
           case None =>
-            context.getLogger.log(s"Unsupported image ignored: ${imageSource.toString}")
+            awsLambdaContext.getLogger.log(s"Unsupported image ignored: ${imageSource.toString}")
         }
       }
 
       def deconstruct(imageSource: ImageSource): (String, String, String) = {
         val imageId = imageSource.imageId.value
-        val country = imageSource.site.country.toString
+        val country = imageSource.site.country.value
         val verticalMarket = imageSource.site.verticalMarket.value
         val extension = getExtension(imageSource.url.getPath)
         (s"$country/$verticalMarket", imageId, extension)
